@@ -18,4 +18,6 @@ Maintainer: Joe Developer <Joe.Developer@some.domain.net>
 Imports: ROAuth,
     dplyr,
     jsonlite,
-    RCurl
+    RCurl,
+    stringr
+
