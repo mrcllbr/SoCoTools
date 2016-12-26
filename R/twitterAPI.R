@@ -29,6 +29,9 @@ geoCode <- function(address,verbose=FALSE) {
 # Post: returns a maximum of m tweets based on the query qu
 #       starting on the date s and ending on the date e
 twitter_query <- function(qu, m, s, e) {
+  # Solve locale date problems
+  Sys.setlocale("LC_ALL","C")
+
   u = 'https://api.twitter.com/1.1/search/tweets.json'
   query = list(q = qu, count = m, until = toString(e))
   key = 'bRoccNWeJloQfOdzcnZJZM0hc'
@@ -57,6 +60,7 @@ twitter_query <- function(qu, m, s, e) {
   timestamps <- strptime(tweets_json$statuses$created_at, '%a %b %d %H:%M:%S %z %Y')
   result <- data.frame(User = users, Location = locations, Location_detected = geo$V4, Latitude = geo$V1, Longitude = geo$V2, Tweet = tweets, Date = timestamps)
 
+  #print(nrow(result))
   result <- dplyr::filter(result, Date >= strptime(s, '%Y-%m-%d'))
 
   return(result)
@@ -67,7 +71,7 @@ prova <- function() {
   # Query to the Twitter API
   query = '#cybersecurity management'
   # Maximum number of tweets returned
-  max = 100L
+  max = 5L
   d = as.Date(Sys.Date(), '%y-%m-%d')
   # Tweets searching start date
   start_date = d - 1
