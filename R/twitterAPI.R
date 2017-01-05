@@ -33,6 +33,7 @@ twitter_query <- function(qu, m, s, e) {
   Sys.setlocale("LC_ALL","C")
 
   u = 'https://api.twitter.com/1.1/search/tweets.json'
+  e <- paste(e, '23:59')
   query = list(q = qu, count = m, until = toString(e))
   key = 'bRoccNWeJloQfOdzcnZJZM0hc'
   secret = 'NkGAX8MRcDFScgXGRQERcVpijWLfIrnnRPCFenxJSXtXpRWkyz'
@@ -133,17 +134,22 @@ prova <- function() {
 }
 
 prova2 <- function() {
+  library("dplyr")
+
   max = 100L
   d = as.Date(Sys.Date(), '%y-%m-%d')
   start_date = d - 1
+  print(start_date)
   end_date = d
-  querys <- list('linux ubuntu', 'linux overflow', 'linux unity')
+  print(end_date)
+  querys <- list('php')
 
   first = TRUE
   plot = ''
   a = seq(0, 23, 1)
   for(query in querys) {
     result <- twitter_query(query, max, start_date, end_date)
+    print(result$Date)
     split_result <- split(result, lubridate::hour(result$Date))
     split_result = as.data.frame.matrix(t(sapply(X = split_result, FUN = nrow)))
 
@@ -153,11 +159,11 @@ prova2 <- function() {
     }
 
     if(first) {
-      plot<-paste('p<-plot_ly(y=', toString(list(b)), ', x=a , type="scatter", mode="lines", name="', toString(query), '")')
+      plot<-paste('p<-plotly::plot_ly(y=', toString(list(b)), ', x=a , type="scatter", mode="lines", name="', toString(query), '")')
       first = FALSE
     }
     else {
-      plot<-paste(plot, ' %>% add_trace(y=', toString(list(b)), ', x=a, type="scatter", mode="lines", name="', toString(query), '")')
+      plot<-paste(plot, ' %>% plotly::add_trace(y=', toString(list(b)), ', x=a, type="scatter", mode="lines", name="', toString(query), '")')
     }
   }
 
