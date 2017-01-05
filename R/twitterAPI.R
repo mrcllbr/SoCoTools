@@ -33,7 +33,7 @@ twitter_query <- function(qu, m, s, e) {
   Sys.setlocale("LC_ALL","C")
 
   u = 'https://api.twitter.com/1.1/search/tweets.json'
-  e <- paste(e, '23:59')
+  e <- e + 1
   query = list(q = qu, count = m, until = toString(e))
   key = 'bRoccNWeJloQfOdzcnZJZM0hc'
   secret = 'NkGAX8MRcDFScgXGRQERcVpijWLfIrnnRPCFenxJSXtXpRWkyz'
@@ -139,10 +139,8 @@ prova2 <- function() {
   max = 100L
   d = as.Date(Sys.Date(), '%y-%m-%d')
   start_date = d - 1
-  print(start_date)
   end_date = d
-  print(end_date)
-  querys <- list('php')
+  querys <- list('windows')
 
   first = TRUE
   plot = ''
