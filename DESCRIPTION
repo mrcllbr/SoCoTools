@@ -20,5 +20,6 @@ Imports: ROAuth,
     jsonlite,
     RCurl,
     stringr,
-    plotly
+    plotly,
+    magrittr
 
