@@ -84,21 +84,39 @@ prova <- function() {
   end_date = d
   result <- twitter_query(query, max, start_date, end_date)
   #print(result)
+  result2 <- twitter_query('linux overflow', max, start_date, end_date)
+  result3 <- twitter_query('linux unity', max, start_date, end_date)
 
-  x <- split(result, lubridate::hour(result$Date))
+  results <- list(result, result2, result3)
+  first = TRUE
+  count = 1
+  for(result in results) {
+    x <- split(result, lubridate::hour(result$Date))
+    nt <- paste(as.data.frame.matrix(t(sapply(X = x, FUN = nrow))), sep="")
+    #print(nt)
 
-  #print(x)
-  #print(as.data.frame.matrix(t(sapply(X = x, FUN = nrow))))
-  nt <- paste(as.data.frame.matrix(t(sapply(X = x, FUN = nrow))), sep="")
-  #print(nt)
+    a = c(names(x))
+    b = c(nt)
 
-  # Create data:
-  a=c(names(x))
-  b=c(nt)
+    aux = as.data.frame.matrix(t(sapply(X = x, FUN = nrow)))
+    print(aux)
+    a = seq(0, 23, 1)
+    #print(a)
+    b = rep(0, 24)
+    for(x in 1:length(aux)) {
+      b[as.integer(names(aux[x]))+1] = as.integer(aux[1,x])
+    }
+    #print(b)
 
-  # Make a basic graph
-  plot(b~a, type="b", bty="l", xlab="Hour of day", ylab="Number of tweets", col="green", lwd=1, pch=20, xlim=c(0, 24))
-
+    if(first) {
+      plot(b~a, type="b", bty="l", xlab="Hour of day", ylab="Number of tweets", col=count, lwd=1, pch=20, xlim=c(0, 24))
+      first = FALSE
+      count =+ 1
+    }
+    else {
+      lines(b~a, col=count, lwd=1, pch=20, type="b")
+    }
+  }
 
   # Add a legend
   # legend("bottomleft",
@@ -114,6 +132,52 @@ prova <- function() {
   #        inset = c(0.1, 0.1))
 }
 
+prova2 <- function() {
+  max = 100L
+  d = as.Date(Sys.Date(), '%y-%m-%d')
+  start_date = d - 1
+  end_date = d
+  querys <- list('linux ubuntu', 'linux overflow', 'linux unity')
 
+  first = TRUE
+  plot = ''
+  a = seq(0, 23, 1)
+  for(query in querys) {
+    result <- twitter_query(query, max, start_date, end_date)
+    split_result <- split(result, lubridate::hour(result$Date))
+    split_result = as.data.frame.matrix(t(sapply(X = split_result, FUN = nrow)))
 
+    b = rep(0, 24)
+    for(x in 1:length(split_result)) {
+      b[as.integer(names(split_result[x]))+1] = as.integer(split_result[1,x])
+    }
+
+    if(first) {
+      plot<-paste('p<-plot_ly(y=', toString(list(b)), ', x=a , type="scatter", mode="lines", name="', toString(query), '")')
+      first = FALSE
+    }
+    else {
+      plot<-paste(plot, ' %>% add_trace(y=', toString(list(b)), ', x=a, type="scatter", mode="lines", name="', toString(query), '")')
+    }
+  }
+
+  eval(parse(text=plot))
+  p
+}
+
+prova3 <- function() {
+  library(plotly)
+
+  my_y=rnorm(10)*3
+  my_x=seq(0,9)
+
+  plot<-paste('p<-plot_ly(y=', toString(list(my_y)), ', x=my_x , type="scatter", mode="lines")')
+
+  for(i in 1:3) {
+    my_y=rnorm(10)
+    plot<-paste(plot, ' %>% add_trace(y=~', toString(list(my_y)), ', x=~my_x, type="scatter", mode="lines")')
+  }
+  eval(parse(text=plot))
+  p
+}
 

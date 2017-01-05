@@ -19,5 +19,6 @@ Imports: ROAuth,
     dplyr,
     jsonlite,
     RCurl,
-    stringr
+    stringr,
+    plotly
 
